@@ -31,6 +31,5 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no  adminpira@pirasoft.co << 'EOF'
         cd /var/www/html/projects/leyson_dash
-        docker-compose down
-        docker-compose up -d --build
+        docker compose up -d --build
         EOF
