@@ -1,0 +1,36 @@
+name: Docker Deployment
+
+# Definir cuándo debe ejecutarse el workflow (cuando haya un push en la rama main)
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Paso 1: Checkout del código del repositorio
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    # Paso 2: Configurar el acceso SSH para el servidor remoto
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    # Paso 3: Copiar archivos necesarios al servidor remoto
+    - name: Copy Files to Remote Server
+      run: |
+        scp -o StrictHostKeyChecking=no -r . user@remote-server-ip:/home/user/deploy-directory
+
+    # Paso 4: Ejecutar Docker Compose en el servidor remoto
+    - name: Deploy Application via SSH
+      run: |
+        ssh -o StrictHostKeyChecking=no user@remote-server-ip << 'EOF'
+        cd /home/user/deploy-directory
+        docker-compose down
+        docker-compose up -d --build
+        EOF
