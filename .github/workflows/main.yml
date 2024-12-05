@@ -24,13 +24,13 @@ jobs:
     # Paso 3: Copiar archivos necesarios al servidor remoto
     - name: Copy Files to Remote Server
       run: |
-        scp -o StrictHostKeyChecking=no -r . user@remote-server-ip:/home/user/deploy-directory
+        scp -o StrictHostKeyChecking=no -r . root@pirasoft.co:/var/www/html/projects
 
     # Paso 4: Ejecutar Docker Compose en el servidor remoto
     - name: Deploy Application via SSH
       run: |
-        ssh -o StrictHostKeyChecking=no user@remote-server-ip << 'EOF'
-        cd /home/user/deploy-directory
+        ssh -o StrictHostKeyChecking=no  root@pirasoft.co << 'EOF'
+        cd /var/www/html/projects
         docker-compose down
         docker-compose up -d --build
         EOF
