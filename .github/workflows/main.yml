@@ -21,25 +21,16 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    # Paso 3: Crear un archivo tar del contenido del proyecto
-    - name: Archive Project Files
-      run: |
-        tar -czf project-files.tar.gz .
-
-    # Paso 4: Copiar el archivo tar al servidor remoto
+    # Paso 3: Copiar archivos necesarios al servidor remoto
     - name: Copy Files to Remote Server
       run: |
-        scp -o StrictHostKeyChecking=no project-files.tar.gz adminpira@pirasoft.co:/var/www/html/
+        scp -o StrictHostKeyChecking=no -r * adminpira@pirasoft.co:/var/www/html/projects/leyson_dash
 
-    # Paso 5: Descomprimir y Ejecutar Docker Compose en el servidor remoto
+    # Paso 4: Ejecutar Docker Compose en el servidor remoto
     - name: Deploy Application via SSH
       run: |
-        ssh -o StrictHostKeyChecking=no adminpira@pirasoft.co << 'EOF'
-        set -e
-        cd /var/www/html
-        tar -xzf project-files.tar.gz -C /var/www/html/projects
-        rm project-files.tar.gz
-        cd /var/www/html/projects
-        docker-compose down || true
+        ssh -o StrictHostKeyChecking=no  adminpira@pirasoft.co << 'EOF'
+        cd /var/www/html/projects/leyson_dash
+        docker-compose down
         docker-compose up -d --build
         EOF
