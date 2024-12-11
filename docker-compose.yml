@@ -7,4 +7,4 @@ services:
     container_name: leyson_dashboard
     restart: always
     ports:
-      - 6113:80
+      - 6112:80
